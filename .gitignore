@@ -7,4 +7,8 @@ MASHUP.sln
 Materials
 Prefabs
 Scenes
+Library/
+ProjectSettings/
+Temp/
+obj/
 
