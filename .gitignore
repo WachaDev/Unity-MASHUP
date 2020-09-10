@@ -11,4 +11,8 @@ Library/
 ProjectSettings/
 Temp/
 obj/
+Assets/Materials.meta
+Assets/Prefabs.meta
+Assets/Scenes.meta
+Assets/Scripts.meta
 
