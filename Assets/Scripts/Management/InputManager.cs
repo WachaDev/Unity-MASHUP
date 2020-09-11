@@ -18,6 +18,7 @@ public class InputManager : MonoBehaviour
     [Header("Shoot")]
     public bool fire;
     public bool aim;
+    public bool reload;
 
 
     [Header("Other inputs")]
@@ -33,13 +34,14 @@ public class InputManager : MonoBehaviour
         mouseX = Input.GetAxisRaw("Mouse X");
         mouseY = Input.GetAxisRaw("Mouse Y");
 
-        openInventory = Input.GetKeyDown(KeyCode.E);
+        openInventory = Input.GetKeyDown(KeyCode.C);
         saveInInventoy = Input.GetKeyDown(KeyCode.F);
 
         fire = Input.GetMouseButton(0);
         aim = Input.GetMouseButton(1);
+        reload = Input.GetKeyDown(KeyCode.E);
 
-        interact = Input.GetMouseButtonDown(0);
+        interact = Input.GetKeyDown(KeyCode.E);
         throwItem = Input.GetKeyDown(KeyCode.Q);
     }
 }

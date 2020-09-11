@@ -7,8 +7,9 @@ public class Interact : MonoBehaviour
     [SerializeField] private Transform objectZone = null;
     [SerializeField] private float throwForce = 4f;
     [SerializeField] private Camera cam;
+    [SerializeField] private Weapon weapon;
 
-    private bool DropOrThrow => input.interact || input.throwItem && Item.inUse;
+    private bool DropOrThrow => (input.interact || input.throwItem) && Item.inUse;
     private bool Grab => input.interact && Item.inUse == false; 
 
     void Start()
@@ -69,5 +70,10 @@ public class Interact : MonoBehaviour
 
         item.transform.SetParent(null);
         item = null;
+    }
+
+    private void HideWeapon()
+    {
+        
     }
 }

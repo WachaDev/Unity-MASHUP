@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    private void Start() => input.GetComponent<InputManager>();
     private void Update() => time += Time.deltaTime;
 
     protected enum CannonType { Large, Short, Duplex }
@@ -12,14 +11,15 @@ public class Weapon : MonoBehaviour
     protected Enum cannonType;
     protected Enum shootType;
 
-    protected float fireRate;
-    public string weaponName;
-    protected float recoil;
-    protected float bulletDistance;
+    [Header("Properties")]
+    [SerializeField] protected string weaponName;
+    [SerializeField] protected float fireRate;
+    [SerializeField] protected float recoil;
+    [SerializeField] protected float bulletDistance;
 
-    [HideInInspector] public float damage;
-    [HideInInspector] public int maxAmmo;
-    public int currentAmmo;
+    [SerializeField] protected float damage;
+    [SerializeField] protected int maxAmmo;
+    [SerializeField] protected int currentAmmo;
     private int CurrentAmmo
     {
         get
@@ -29,24 +29,36 @@ public class Weapon : MonoBehaviour
             else
                 return currentAmmo;
         }
-        set {}
     }
     
-    [SerializeField] protected InputManager input;
     private float time = 0.0f;
+    [SerializeField] private bool CanShoot => this.currentAmmo > 0 && FireRate();
+    [SerializeField] private Transform gunZone;
+    protected Vector3 alignPosition;
+
+    //* Pick up Weapon
+    protected virtual void OnTriggerEnter(Collider other) 
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            this.gameObject.transform.SetParent(gunZone);
+            this.gameObject.transform.position = gunZone.transform.position;
+            this.gameObject.transform.localEulerAngles = this.alignPosition;
+
+            this.gameObject.GetComponent<BoxCollider>().enabled = false;
+
+            // other.gameObject.AddComponent<>();
+        }    
+    }
 
     protected virtual bool FireRate()
     {
-        float delay = 0.0f;
-        delay += Time.deltaTime;
-
         if (time > this.fireRate)
             return true;
         else
             return false;
     }
-
-    public bool CanShoot => input.fire && this.currentAmmo > 0 && FireRate();
+    
     public virtual void Shoot(Camera viewport, LayerMask layerToHit)
     {
         if (CanShoot)
@@ -67,6 +79,8 @@ public class Weapon : MonoBehaviour
             }
         }
     }
+
+    public virtual void Aim(Camera cam) {}
 
     public virtual void Reload() {}
 }

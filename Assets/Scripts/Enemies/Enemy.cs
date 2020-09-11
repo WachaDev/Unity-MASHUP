@@ -2,18 +2,20 @@
 
 public class Enemy : MonoBehaviour
 {
-    protected float currentHealth;
-    protected float maxHealth;
+    [SerializeField] public float currentHealth;
+    [SerializeField] protected float maxHealth;
+
+    private void Update() => Die();
 
     public void TakeDamage(float damage)
     {
-        if (currentHealth >= 0)
-            this.currentHealth -= damage;
+        if (currentHealth >= 0f)
+            currentHealth -= damage;
     }
 
     public void Die()
     {
-        if (currentHealth < 0)
+        if (currentHealth <= 0f)
             Destroy(gameObject);
     }
 }
