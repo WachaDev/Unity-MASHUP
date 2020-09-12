@@ -25,7 +25,7 @@ public class UseWeapon : MonoBehaviour
         {
             if (input.fire)
                 weapon.Shoot(cam, enemyLayer);
-            if (input.reload)
+            if (input.aim)
                 weapon.Aim(cam);
             if (input.reload)    
                 weapon.Reload();

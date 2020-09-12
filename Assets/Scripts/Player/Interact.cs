@@ -2,12 +2,13 @@
 
 public class Interact : MonoBehaviour
 {
+    [Header("References")]
     [SerializeField] private InputManager input;
-    [SerializeField] private Inventory inventory;
-    [SerializeField] private Transform objectZone = null;
-    [SerializeField] private float throwForce = 4f;
+    [SerializeField] private GameObject gunZone;
     [SerializeField] private Camera cam;
-    [SerializeField] private Weapon weapon;
+    [SerializeField] private Transform objectZone = null;
+    [SerializeField] private Inventory inventory;
+    [SerializeField] private float throwForce = 4f;
 
     private bool DropOrThrow => (input.interact || input.throwItem) && Item.inUse;
     private bool Grab => input.interact && Item.inUse == false; 
@@ -35,9 +36,15 @@ public class Interact : MonoBehaviour
             if (getItem != null)
             {
                 if (Grab)
+                {
                     GrabItem(getItem);
+                    gunZone.SetActive(false);
+                }
                 else if (DropOrThrow)
+                {
                     DropItem(getItem);
+                    gunZone.SetActive(true);
+                }
                 
                 if (input.saveInInventoy)
                     inventory.AddToInventory(getItem);
@@ -70,10 +77,5 @@ public class Interact : MonoBehaviour
 
         item.transform.SetParent(null);
         item = null;
-    }
-
-    private void HideWeapon()
-    {
-        
     }
 }

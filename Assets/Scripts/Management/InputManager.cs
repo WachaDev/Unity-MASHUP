@@ -39,7 +39,7 @@ public class InputManager : MonoBehaviour
 
         fire = Input.GetMouseButton(0);
         aim = Input.GetMouseButton(1);
-        reload = Input.GetKeyDown(KeyCode.E);
+        reload = Input.GetKeyDown(KeyCode.R);
 
         interact = Input.GetKeyDown(KeyCode.E);
         throwItem = Input.GetKeyDown(KeyCode.Q);

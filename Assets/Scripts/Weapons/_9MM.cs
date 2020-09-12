@@ -11,6 +11,10 @@ public class _9MM : Weapon
 
         this.maxAmmo = 60;
         this.currentAmmo = this.maxAmmo;
+        this.maxCartridge = 6;
+        this.currentCartridge = this.maxCartridge;
+
+        this.reloadTime = 1.5f;
         this.bulletDistance = 100.0f;
 
         this.cannonType = CannonType.Short;
