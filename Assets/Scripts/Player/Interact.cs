@@ -4,11 +4,13 @@ public class Interact : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private InputManager input;
-    [SerializeField] private GameObject gunZone;
+    [SerializeField] private GameObject gunZone = null;
     [SerializeField] private Camera cam;
     [SerializeField] private Transform objectZone = null;
     [SerializeField] private Inventory inventory;
     [SerializeField] private float throwForce = 4f;
+    [SerializeField] private GameObject interactCrosshair = null;
+    [SerializeField] private  GameObject weaponCrosshair = null;
 
     private bool DropOrThrow => (input.interact || input.throwItem) && Item.inUse;
     private bool Grab => input.interact && Item.inUse == false; 
@@ -18,6 +20,7 @@ public class Interact : MonoBehaviour
         input = GetComponent<InputManager>();
         inventory = GetComponent<Inventory>();
         cam = GetComponent<Transform>().GetChild(0).GetComponent<Camera>();
+        interactCrosshair.SetActive(true);
     }
 
     void Update()
@@ -39,15 +42,27 @@ public class Interact : MonoBehaviour
                 {
                     GrabItem(getItem);
                     gunZone.SetActive(false);
+
+                    weaponCrosshair.SetActive(false);
+                    interactCrosshair.SetActive(true);
                 }
                 else if (DropOrThrow)
                 {
                     DropItem(getItem);
                     gunZone.SetActive(true);
+
+                    weaponCrosshair.SetActive(true);
+                    interactCrosshair.SetActive(false);
                 }
                 
                 if (input.saveInInventoy)
+                {
                     inventory.AddToInventory(getItem);
+                    gunZone.SetActive(true);
+
+                    weaponCrosshair.SetActive(true);
+                    interactCrosshair.SetActive(false);
+                }
             }
         }
     }

@@ -2,20 +2,24 @@
 
 public class UseWeapon : MonoBehaviour
 {
-    [SerializeField] private InputManager input;
-    [SerializeField] private Camera cam;
+    [Header("References")]
+    [SerializeField] private InputManager input = null;
+    [SerializeField] private Camera cam = null;
     [SerializeField] private LayerMask enemyLayer;
     [SerializeField] private Weapon anyWeapon;
+    [SerializeField] private Animator weaponAnimations;
 
     private void Start()
     {
-        input = GetComponent<InputManager>();
         enemyLayer = LayerMask.GetMask("Enemy");
     }
 
-    private void Update() 
+    private void Update()
     {
-        anyWeapon = GetComponent<Weapon>();
+        anyWeapon = GetComponentInChildren<Weapon>();
+        if (anyWeapon != null)
+            weaponAnimations = GetComponentInChildren<Animator>();
+
         PickUpWeapon(anyWeapon);
     }
 
@@ -24,11 +28,35 @@ public class UseWeapon : MonoBehaviour
         if (weapon != null)
         {
             if (input.fire)
+            {
                 weapon.Shoot(cam, enemyLayer);
+                if (weapon.isShooting)
+                {
+                    weaponAnimations.SetBool("isShooting", true);
+                    weaponAnimations.SetFloat("fireRate", weapon.fireRate);
+                }
+            }
+            else
+                weaponAnimations.SetBool("isShooting", false);
+
+
             if (input.aim)
+            {
                 weapon.Aim(cam);
-            if (input.reload)    
+            }
+
+            if (input.reload)
+            {
                 weapon.Reload();
+
+                if (weapon.isReloading)
+                {
+                    weaponAnimations.SetFloat("reloadTime", weapon.reloadTime);
+                    weaponAnimations.SetBool("isReloading", true);
+                }
+            }
+            if (weapon.isReloading == false)
+                weaponAnimations.SetBool("isReloading", false);
         }
     }
 }

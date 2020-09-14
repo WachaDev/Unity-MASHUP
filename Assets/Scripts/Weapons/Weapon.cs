@@ -2,13 +2,7 @@
 
 public class Weapon : MonoBehaviour
 {
-    private void Update()
-    {
-        fireRateTimer += Time.deltaTime;
-
-        if (isReloading)
-            reloadTimer += Time.deltaTime;
-    }
+    private void Update() => this.fireRateTimer += Time.deltaTime;
     private float fireRateTimer;
     private float reloadTimer;
 
@@ -26,9 +20,10 @@ public class Weapon : MonoBehaviour
     [SerializeField] protected string weaponName;
     [SerializeField] protected float damage;
     [SerializeField] public float reloadTime;
-    [SerializeField] protected float fireRate;
+    [SerializeField] public float fireRate;
     [SerializeField] protected float recoil;
     [SerializeField] protected float bulletDistance;
+    [SerializeField] protected Vector3 aim;
 
     [Header("Max's")]
     [SerializeField] public int maxAmmo;
@@ -62,7 +57,8 @@ public class Weapon : MonoBehaviour
 
     [Header("States")]
     [SerializeField] public bool isReloading;
-    [SerializeField] private bool CanShoot => FireRate() && this.currentCartridge > 0 && !isReloading;
+    [SerializeField] public bool isShooting;
+    [SerializeField] public bool CanShoot => FireRate() && this.CurrentCartridge > 0 && !isReloading;
     protected Vector3 alignPosition;
 
     //* Pick up Weapon
@@ -84,7 +80,7 @@ public class Weapon : MonoBehaviour
 
     protected virtual bool FireRate()
     {
-        if (this.fireRateTimer > this.fireRate)
+        if (this.fireRateTimer >= this.fireRate)
             return true;
         else
             return false;
@@ -95,6 +91,8 @@ public class Weapon : MonoBehaviour
         if (this.CanShoot)
         {
             this.fireRateTimer = 0.0f;
+            this.isShooting = true;
+
             Ray bullet = viewport.ViewportPointToRay(Vector3.one * 0.5f);
             RaycastHit hit;
             this.currentCartridge--;
@@ -106,46 +104,42 @@ public class Weapon : MonoBehaviour
                     enemy.TakeDamage(this.damage);
             }
         }
+        else
+            this.isShooting = false;
     }
 
     // TODO:
-    public virtual void Aim(Camera cam) 
-    {   
-        
+    public virtual void Aim(Camera cam)
+    {
+        cam.transform.localPosition += this.aim;
     }
 
     public virtual void Reload()
     {
-        if (this.CurrentAmmo > 0)
+        if ((this.CurrentAmmo > 0) && (this.CurrentCartridge < this.maxCartridge))
         {
-            if (isReloading == false && (this.CurrentCartridge < this.maxCartridge))
-            {
-                Invoke("Reload", this.reloadTime);
-                this.isReloading = true;
-            }
+            Invoke("ReloadCalculations", this.reloadTime);
+            this.isReloading = true;
+        }
+    }
+
+    private void ReloadCalculations()
+    {
+        //? Debug
+        Debug.Log("Reloaded");
+
+        int need = this.maxCartridge - this.CurrentCartridge;
+        if (need > this.CurrentAmmo)
+        {
+            this.CurrentCartridge += this.CurrentAmmo;
+            this.CurrentAmmo = 0;
         }
         else
-            return;
-
-        if (this.reloadTimer > this.reloadTime)
         {
-            //? Debug
-            Debug.Log("Reloading");
-
-            int need = this.maxCartridge - this.CurrentCartridge;
-            if (need > this.CurrentAmmo)
-            {
-                this.CurrentCartridge += this.CurrentAmmo;
-                this.CurrentAmmo = 0;
-            }
-            else
-            {
-                this.CurrentAmmo -= this.maxCartridge - this.CurrentCartridge;
-                this.CurrentCartridge = need + this.CurrentCartridge;
-            }
-
-            this.reloadTimer = 0.0f;
-            this.isReloading = false;
+            this.CurrentAmmo -= this.maxCartridge - this.CurrentCartridge;
+            this.CurrentCartridge = need + this.CurrentCartridge;
         }
+
+        this.isReloading = false;
     }
 }

@@ -4,9 +4,9 @@ using UnityEngine.UI;
 public class Inventory : MonoBehaviour
 {
     [SerializeField] private InputManager input;
-    [SerializeField] private GameObject[] slots;
-    [SerializeField] private bool[] isFull;
-    [SerializeField] private GameObject inventoryPanel;
+    [SerializeField] private GameObject[] slots = null;
+    [SerializeField] private bool[] isFull = null;
+    [SerializeField] private GameObject inventoryPanel = null;
     [SerializeField] private bool isOpen;
 
     private void Start() 

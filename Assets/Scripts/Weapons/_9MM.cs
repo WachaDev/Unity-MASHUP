@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
 public class _9MM : Weapon
 {
     private _9MM()
@@ -10,11 +11,11 @@ public class _9MM : Weapon
         this.fireRate = 0.5f;
 
         this.maxAmmo = 60;
-        this.currentAmmo = this.maxAmmo;
+        this.CurrentAmmo = this.maxAmmo;
         this.maxCartridge = 6;
-        this.currentCartridge = this.maxCartridge;
+        this.CurrentCartridge = this.maxCartridge;
 
-        this.reloadTime = 1.5f;
+        this.reloadTime = 1.5f; // 1.5f
         this.bulletDistance = 100.0f;
 
         this.cannonType = CannonType.Short;
@@ -26,7 +27,6 @@ public class _9MM : Weapon
     protected override void OnTriggerEnter(Collider other)
     {
         base.OnTriggerEnter(other);
-        other.gameObject.AddComponent<_9MM>();
     }
 
     // ADD SOME STUFF OR DETAILS AS YOU WANT
