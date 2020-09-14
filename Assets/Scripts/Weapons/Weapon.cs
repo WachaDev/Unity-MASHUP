@@ -9,56 +9,59 @@ public class Weapon : MonoBehaviour
         if (isReloading)
             reloadTimer += Time.deltaTime;
     }
+    private float fireRateTimer;
+    private float reloadTimer;
 
     protected enum CannonType { Large, Short, Duplex }
-
     protected enum ShootType { Auto, Semi, Burst }
     protected CannonType cannonType;
     protected ShootType shootType;
 
     [Header("References")]
-    [SerializeField] private Transform gunZone;
+    [SerializeField] private Transform gunZone = null;
+    [SerializeField] private GameObject interactCrosshair = null;
+    [SerializeField] private GameObject weaponCrosshair = null;
 
     [Header("Properties")]
     [SerializeField] protected string weaponName;
     [SerializeField] protected float damage;
+    [SerializeField] public float reloadTime;
     [SerializeField] protected float fireRate;
     [SerializeField] protected float recoil;
     [SerializeField] protected float bulletDistance;
 
     [Header("Max's")]
-    [SerializeField] protected int maxAmmo;
-    [SerializeField] protected int maxCartridge;
+    [SerializeField] public int maxAmmo;
+    [SerializeField] public int maxCartridge;
 
     [Header("Current's")]
-    [SerializeField] protected int currentCartridge;
-    private int CurrentCartridge
+    [SerializeField] private int currentCartridge;
+    protected int CurrentCartridge
     {
-        get
+        get { return currentCartridge; }
+        set
         {
+            currentCartridge = value;
             if (currentCartridge > maxCartridge)
-                return currentCartridge = maxCartridge;
-            else
-                return currentCartridge;
+                currentCartridge = maxCartridge;
         }
     }
 
-    [SerializeField] protected int currentAmmo;
-    private int CurrentAmmo
+    [SerializeField] private int currentAmmo;
+    protected int CurrentAmmo
     {
-        get
+        get { return currentAmmo; }
+        set
         {
+            currentAmmo = value;
             if (currentAmmo > maxAmmo)
-                return currentAmmo = maxAmmo;
-            else
-                return currentAmmo;
+                currentAmmo = maxAmmo;
         }
     }
 
-    private float fireRateTimer;
-    private float reloadTimer;
-    protected float reloadTime;
-    [SerializeField] private bool isReloading;
+
+    [Header("States")]
+    [SerializeField] public bool isReloading;
     [SerializeField] private bool CanShoot => FireRate() && this.currentCartridge > 0 && !isReloading;
     protected Vector3 alignPosition;
 
@@ -73,13 +76,15 @@ public class Weapon : MonoBehaviour
 
             this.gameObject.GetComponent<BoxCollider>().enabled = false;
 
+            interactCrosshair.SetActive(false);
+            weaponCrosshair.SetActive(true);
             // other.gameObject.AddComponent<>();
         }
     }
 
     protected virtual bool FireRate()
     {
-        if (fireRateTimer > this.fireRate)
+        if (this.fireRateTimer > this.fireRate)
             return true;
         else
             return false;
@@ -87,9 +92,9 @@ public class Weapon : MonoBehaviour
 
     public virtual void Shoot(Camera viewport, LayerMask layerToHit)
     {
-        if (CanShoot)
+        if (this.CanShoot)
         {
-            fireRateTimer = 0.0f;
+            this.fireRateTimer = 0.0f;
             Ray bullet = viewport.ViewportPointToRay(Vector3.one * 0.5f);
             RaycastHit hit;
             this.currentCartridge--;
@@ -103,41 +108,44 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    public virtual void Aim(Camera cam) { }
+    // TODO:
+    public virtual void Aim(Camera cam) 
+    {   
+        
+    }
 
     public virtual void Reload()
     {
-        if (currentAmmo > 0)
+        if (this.CurrentAmmo > 0)
         {
-            if (isReloading == false)
+            if (isReloading == false && (this.CurrentCartridge < this.maxCartridge))
+            {
                 Invoke("Reload", this.reloadTime);
+                this.isReloading = true;
+            }
         }
         else
             return;
 
-        if (this.currentCartridge < this.maxCartridge)
+        if (this.reloadTimer > this.reloadTime)
         {
-            this.isReloading = true;
-            if (this.reloadTimer > this.reloadTime)
+            //? Debug
+            Debug.Log("Reloading");
+
+            int need = this.maxCartridge - this.CurrentCartridge;
+            if (need > this.CurrentAmmo)
             {
-                //? Debug
-                Debug.Log("Reloading");
-
-                int need =  this.maxCartridge - this.currentCartridge;
-                if (need > this.currentAmmo)
-                {
-                    this.currentCartridge += this.currentAmmo;
-                    this.currentAmmo = 0;
-                }
-                else
-                {
-                    this.currentAmmo -= this.maxCartridge - this.currentCartridge;
-                    this.currentCartridge = need + this.currentCartridge;
-                }
-
-                this.reloadTimer = 0.0f;
-                this.isReloading = false;
+                this.CurrentCartridge += this.CurrentAmmo;
+                this.CurrentAmmo = 0;
             }
+            else
+            {
+                this.CurrentAmmo -= this.maxCartridge - this.CurrentCartridge;
+                this.CurrentCartridge = need + this.CurrentCartridge;
+            }
+
+            this.reloadTimer = 0.0f;
+            this.isReloading = false;
         }
     }
 }
