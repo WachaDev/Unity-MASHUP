@@ -9,10 +9,7 @@ public class UseWeapon : MonoBehaviour
     [SerializeField] private Weapon anyWeapon;
     [SerializeField] private Animator weaponAnimations;
 
-    private void Start()
-    {
-        enemyLayer = LayerMask.GetMask("Enemy");
-    }
+    private void Start() => enemyLayer = LayerMask.GetMask("Enemy");
 
     private void Update()
     {

@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float radius = 0.3f;
     [SerializeField] private bool isGrounded;
 
-    void Start()
+    private void Start()
     {
         input = GetComponent<InputManager>();
 
@@ -23,10 +23,7 @@ public class PlayerController : MonoBehaviour
         groundChecker = GetComponent<Transform>().GetChild(1);
     }
 
-    void FixedUpdate()
-    {
-        Controller();
-    }
+    void FixedUpdate() => Controller();
 
     private void Controller() 
     {

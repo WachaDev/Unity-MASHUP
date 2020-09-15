@@ -10,12 +10,12 @@ public class Interact : MonoBehaviour
     [SerializeField] private Inventory inventory;
     [SerializeField] private float throwForce = 4f;
     [SerializeField] private GameObject interactCrosshair = null;
-    [SerializeField] private  GameObject weaponCrosshair = null;
+    [SerializeField] private GameObject weaponCrosshair = null;
 
     private bool DropOrThrow => (input.interact || input.throwItem) && Item.inUse;
-    private bool Grab => input.interact && Item.inUse == false; 
+    private bool Grab => input.interact && Item.inUse == false;
 
-    void Start()
+    private void Start()
     {
         input = GetComponent<InputManager>();
         inventory = GetComponent<Inventory>();
@@ -23,16 +23,13 @@ public class Interact : MonoBehaviour
         interactCrosshair.SetActive(true);
     }
 
-    void Update()
-    {
-        InteractWithObject();
-    }
+    private void Update() => InteractWithObject();
 
     private void InteractWithObject()
     {
         Ray ray = cam.ViewportPointToRay(Vector3.one * 0.5f);
         RaycastHit hit;
-        
+
         if (Physics.Raycast(ray.origin, ray.direction, out hit, Item.efectiveRadius))
         {
             Item getItem = hit.collider.GetComponent<Item>();
@@ -54,7 +51,7 @@ public class Interact : MonoBehaviour
                     weaponCrosshair.SetActive(true);
                     interactCrosshair.SetActive(false);
                 }
-                
+
                 if (input.saveInInventoy)
                 {
                     inventory.AddToInventory(getItem);

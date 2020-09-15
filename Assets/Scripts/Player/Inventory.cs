@@ -9,15 +9,13 @@ public class Inventory : MonoBehaviour
     [SerializeField] private GameObject inventoryPanel = null;
     [SerializeField] private bool isOpen;
 
-    private void Start() 
+    private void Start()
     {
         input = GetComponent<InputManager>();
-        inventoryPanel.SetActive(false);  
+        inventoryPanel.SetActive(false);
     }
-    private void Update() 
-    {
-        OpenInventoy();    
-    }
+    private void Update() => OpenInventoy();
+    
     private void OpenInventoy()
     {
         if (input.openInventory && isOpen == false)

@@ -3,8 +3,8 @@
 public class Weapon : MonoBehaviour
 {
     private void Update() => this.fireRateTimer += Time.deltaTime;
+
     private float fireRateTimer;
-    private float reloadTimer;
 
     protected enum CannonType { Large, Short, Duplex }
     protected enum ShootType { Auto, Semi, Burst }

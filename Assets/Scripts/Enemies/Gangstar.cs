@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public class Gangstar : Enemy
+﻿public class Gangstar : Enemy
 {
     private Gangstar()
     {

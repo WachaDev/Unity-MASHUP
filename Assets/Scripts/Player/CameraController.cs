@@ -7,20 +7,18 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float mouseSensitive = 100f;
     private float xRotation;
 
-    void Start()
+    private void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
         input = GetComponent<InputManager>();
         cam = GetComponent<Transform>().GetChild(0);
+        
+        Cursor.lockState = CursorLockMode.Locked;
 
         input.mouseX *= mouseSensitive;
         input.mouseY *= mouseSensitive;    
     }
 
-    void LateUpdate()
-    {
-        Controller();
-    }
+    private void LateUpdate() => Controller();
 
     private void Controller() 
     {

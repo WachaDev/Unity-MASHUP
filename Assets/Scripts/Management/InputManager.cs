@@ -25,7 +25,7 @@ public class InputManager : MonoBehaviour
     public bool interact;
     public bool throwItem;    
 
-    void Update()
+    private void Update()
     {
         horizontal = Input.GetAxisRaw("Horizontal");
         vertical = Input.GetAxisRaw("Vertical");
