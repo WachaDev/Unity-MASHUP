@@ -1,18 +1,17 @@
 ﻿using UnityEngine;
 
-public class UseWeapon : MonoBehaviour
-{
+public class UseWeapon : MonoBehaviour {
     [Header("References")]
     [SerializeField] private InputManager input = null;
     [SerializeField] private Camera cam = null;
     [SerializeField] private LayerMask enemyLayer;
     [SerializeField] private Weapon anyWeapon;
     [SerializeField] private Animator weaponAnimations;
+    public static bool WeaponOnHand;
 
     private void Start() => enemyLayer = LayerMask.GetMask("Enemy");
 
-    private void Update()
-    {
+    private void Update() {
         anyWeapon = GetComponentInChildren<Weapon>();
         if (anyWeapon != null)
             weaponAnimations = GetComponentInChildren<Animator>();
@@ -20,34 +19,31 @@ public class UseWeapon : MonoBehaviour
         PickUpWeapon(anyWeapon);
     }
 
-    private void PickUpWeapon(Weapon weapon)
-    {
-        if (weapon != null)
-        {
-            if (input.fire)
-            {
+    private void PickUpWeapon(Weapon weapon) {
+        if (weapon != null) {
+            WeaponOnHand = true;
+            if (input.fire) {
                 weapon.Shoot(cam, enemyLayer);
-                if (weapon.isShooting)
-                {
+                if (weapon.isShooting) {
                     weaponAnimations.SetBool("isShooting", true);
                     weaponAnimations.SetFloat("fireRate", weapon.fireRate);
                 }
-            }
-            else
+            }  
+            if (input.fire == false || weapon.CurrentCartridge <= 0)
                 weaponAnimations.SetBool("isShooting", false);
 
 
-            if (input.aim)
-            {
+            if (input.aim) {
                 weapon.Aim(cam);
-            }
+                weaponAnimations.SetBool("isAiming", true);
 
-            if (input.reload)
-            {
+            } else
+                weaponAnimations.SetBool("isAiming", false);
+
+            if (input.reload) {
                 weapon.Reload();
 
-                if (weapon.isReloading)
-                {
+                if (weapon.isReloading) {
                     weaponAnimations.SetFloat("reloadTime", weapon.reloadTime);
                     weaponAnimations.SetBool("isReloading", true);
                 }

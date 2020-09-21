@@ -1,15 +1,16 @@
 ﻿using UnityEngine;
 
-public class Weapon : MonoBehaviour
-{
+public class Weapon : MonoBehaviour {
+    private void Start() {
+        this.cannonType.CannonProperties();
+        this.shootType.ShootTypeProperties();
+    }
+
     private void Update() => this.fireRateTimer += Time.deltaTime;
 
     private float fireRateTimer;
-
-    protected enum CannonType { Large, Short, Duplex }
-    protected enum ShootType { Auto, Semi, Burst }
-    protected CannonType cannonType;
-    protected ShootType shootType;
+    [SerializeField] protected CannonType cannonType;
+    [SerializeField] protected ShootType shootType;
 
     [Header("References")]
     [SerializeField] private Transform gunZone = null;
@@ -31,11 +32,9 @@ public class Weapon : MonoBehaviour
 
     [Header("Current's")]
     [SerializeField] private int currentCartridge;
-    protected int CurrentCartridge
-    {
+    public int CurrentCartridge {
         get { return currentCartridge; }
-        set
-        {
+        set {
             currentCartridge = value;
             if (currentCartridge > maxCartridge)
                 currentCartridge = maxCartridge;
@@ -43,17 +42,14 @@ public class Weapon : MonoBehaviour
     }
 
     [SerializeField] private int currentAmmo;
-    protected int CurrentAmmo
-    {
+    protected int CurrentAmmo {
         get { return currentAmmo; }
-        set
-        {
+        set {
             currentAmmo = value;
             if (currentAmmo > maxAmmo)
                 currentAmmo = maxAmmo;
         }
     }
-
 
     [Header("States")]
     [SerializeField] public bool isReloading;
@@ -62,10 +58,8 @@ public class Weapon : MonoBehaviour
     protected Vector3 alignPosition;
 
     //* Pick up Weapon
-    protected virtual void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.tag == "Player")
-        {
+    protected virtual void OnTriggerEnter(Collider other) {
+        if (other.gameObject.tag == "Player") {
             this.gameObject.transform.SetParent(gunZone);
             this.gameObject.transform.position = gunZone.transform.position;
             this.gameObject.transform.localEulerAngles = this.alignPosition;
@@ -74,22 +68,18 @@ public class Weapon : MonoBehaviour
 
             interactCrosshair.SetActive(false);
             weaponCrosshair.SetActive(true);
-            // other.gameObject.AddComponent<>();
         }
     }
 
-    protected virtual bool FireRate()
-    {
+    protected virtual bool FireRate() {
         if (this.fireRateTimer >= this.fireRate)
             return true;
         else
             return false;
     }
 
-    public virtual void Shoot(Camera viewport, LayerMask layerToHit)
-    {
-        if (this.CanShoot)
-        {
+    public virtual void Shoot(Camera viewport, LayerMask layerToHit) {
+        if (this.CanShoot) {
             this.fireRateTimer = 0.0f;
             this.isShooting = true;
 
@@ -97,49 +87,78 @@ public class Weapon : MonoBehaviour
             RaycastHit hit;
             this.currentCartridge--;
 
-            if (Physics.Raycast(bullet.origin, bullet.direction, out hit, this.bulletDistance, layerToHit))
-            {
+            if (Physics.Raycast(bullet.origin, bullet.direction, out hit, this.bulletDistance, layerToHit)) {
                 Enemy enemy = hit.collider.GetComponent<Enemy>();
                 if (enemy != null)
                     enemy.TakeDamage(this.damage);
             }
-        }
-        else
+
+        } else
             this.isShooting = false;
     }
 
-    // TODO:
-    public virtual void Aim(Camera cam)
-    {
+    public virtual void Aim(Camera cam) {
         cam.transform.localPosition += this.aim;
     }
 
-    public virtual void Reload()
-    {
-        if ((this.CurrentAmmo > 0) && (this.CurrentCartridge < this.maxCartridge))
-        {
+    public virtual void Reload() {
+        if ((this.CurrentAmmo > 0) && (this.CurrentCartridge < this.maxCartridge)) {
             Invoke("ReloadCalculations", this.reloadTime);
             this.isReloading = true;
         }
     }
 
-    private void ReloadCalculations()
-    {
-        //? Debug
+    private void ReloadCalculations() {
         Debug.Log("Reloaded");
 
         int need = this.maxCartridge - this.CurrentCartridge;
-        if (need > this.CurrentAmmo)
-        {
+        if (need > this.CurrentAmmo) {
             this.CurrentCartridge += this.CurrentAmmo;
             this.CurrentAmmo = 0;
-        }
-        else
-        {
+        } else {
             this.CurrentAmmo -= this.maxCartridge - this.CurrentCartridge;
             this.CurrentCartridge = need + this.CurrentCartridge;
         }
 
         this.isReloading = false;
+    }
+}
+
+public enum CannonType { Large, Short, Duplex }
+public enum ShootType { Auto, Semi, Burst }
+
+public static class CannonAndShootExtension {
+    public static void CannonProperties(this CannonType cannon) {
+        switch (cannon) {
+            case CannonType.Large:
+                Debug.Log("Is large cannon type");
+                break;
+            case CannonType.Short:
+                Debug.Log("Is short cannon type");
+                break;
+            case CannonType.Duplex:
+                Debug.Log("Is duplex cannon type");
+                break;
+            default:
+                Debug.Log("I don't know what is this");
+                break;
+        }
+    }
+
+    public static void ShootTypeProperties(this ShootType shootType) {
+        switch (shootType) {
+            case ShootType.Auto:
+                Debug.Log("Is auto shoot type");
+                break;
+            case ShootType.Semi:
+                Debug.Log("Is semi shoot type");
+                break;
+            case ShootType.Burst:
+                Debug.Log("Is burst shoot type");
+                break;
+            default:
+                Debug.Log("I don't know what is this");
+                break;
+        }
     }
 }

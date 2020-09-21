@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 
-public class InputManager : MonoBehaviour
-{
+public class InputManager : MonoBehaviour {
     [Header("Character movement")]
     public float horizontal;
     public float vertical;
@@ -23,10 +22,9 @@ public class InputManager : MonoBehaviour
 
     [Header("Other inputs")]
     public bool interact;
-    public bool throwItem;    
+    public bool throwItem;
 
-    private void Update()
-    {
+    private void Update() {
         horizontal = Input.GetAxisRaw("Horizontal");
         vertical = Input.GetAxisRaw("Vertical");
         jump = Input.GetKeyDown(KeyCode.V);

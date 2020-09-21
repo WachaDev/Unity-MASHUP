@@ -1,10 +1,8 @@
 ﻿using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-public class _9MM : Weapon
-{
-    private _9MM()
-    {
+public class _9MM : Weapon {
+    private _9MM() {
         this.weaponName = "9MM";
         this.recoil = 0.5f;
         this.damage = 5.0f;
@@ -24,10 +22,8 @@ public class _9MM : Weapon
         this.alignPosition = new Vector3(-4.5f, 1f, 90f);
     }
 
-    protected override void OnTriggerEnter(Collider other)
-    {
-        base.OnTriggerEnter(other);
-    }
+    // ADD SOME STUFF OR DETAILS AS YOU WANT
+    protected override void OnTriggerEnter(Collider other) => base.OnTriggerEnter(other);
 
     // ADD SOME STUFF OR DETAILS AS YOU WANT
     public override void Shoot(Camera viewport, LayerMask layerToHit) => base.Shoot(viewport, layerToHit);

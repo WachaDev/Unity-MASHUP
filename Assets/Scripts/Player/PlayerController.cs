@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerController : MonoBehaviour
-{
+public class PlayerController : MonoBehaviour {
     [SerializeField] private InputManager input;
     [SerializeField] private Rigidbody rb;
     [SerializeField] private float speed = 10f;
@@ -12,8 +11,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float radius = 0.3f;
     [SerializeField] private bool isGrounded;
 
-    private void Start()
-    {
+    private void Start() {
         input = GetComponent<InputManager>();
 
         rb = GetComponent<Rigidbody>();
@@ -23,15 +21,17 @@ public class PlayerController : MonoBehaviour
         groundChecker = GetComponent<Transform>().GetChild(1);
     }
 
-    void FixedUpdate() => Controller();
+    void FixedUpdate() => Move();
+    void Update() => Jump();
 
-    private void Controller() 
-    {
+    private void Move() {
         Vector3 move = transform.right * input.horizontal + transform.forward * input.vertical;
-        rb.AddForce(move * speed * Time.deltaTime, ForceMode.VelocityChange); 
-        
+        rb.AddForce(move * speed * Time.deltaTime, ForceMode.VelocityChange);
+    }
+
+    private void Jump() {
         isGrounded = Physics.CheckSphere(groundChecker.position, radius, groundMask);
         if (isGrounded && input.jump)
-            rb.AddForce(Vector3.up * jumpHeight, ForceMode.VelocityChange);
+            rb.AddForce(Vector3.up * jumpHeight, ForceMode.Impulse);
     }
 }
